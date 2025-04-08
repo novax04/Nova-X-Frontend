@@ -109,6 +109,50 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.appendChild(loader);
         chatBox.scrollTop = chatBox.scrollHeight;
 
+        const lowerCaseMessage = message.toLowerCase();
+
+        if (lowerCaseMessage.startsWith("search ")) {
+            const query = lowerCaseMessage.replace(/^search /i, "");
+            const results = await searchWeb(query);
+            chatBox.removeChild(loader);
+            addMessage("Nova X", "🔎 Search results:", "ai-message");
+            const formatted = results.map(r =>
+                typeof r === 'string'
+                    ? `<div>${r}</div>`
+                    : `<div class="ai-message"><a href="${unwrapDuckDuckGoURL(r.url)}" target="_blank"><strong>${r.title}</strong></a></div>`
+            ).join('');
+            chatBox.innerHTML += formatted;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return;
+        }
+
+        if (lowerCaseMessage.includes("news in")) {
+            const country = lowerCaseMessage.replace("news in", "").trim();
+            await fetchNewsByCountry(country);
+            chatBox.removeChild(loader);
+            return;
+        }
+
+        if (lowerCaseMessage.includes("news about")) {
+            const topic = lowerCaseMessage.replace("news about", "").trim();
+            await fetchNewsByTopic(topic);
+            chatBox.removeChild(loader);
+            return;
+        }
+
+        if (lowerCaseMessage.includes("weather in")) {
+            const city = lowerCaseMessage.replace("weather in", "").trim();
+            await getWeatherByCity(city);
+            chatBox.removeChild(loader);
+            return;
+        }
+
+        if (lowerCaseMessage.includes("weather") || lowerCaseMessage.includes("temperature")) {
+            getLocation();
+            chatBox.removeChild(loader);
+            return;
+        }
+
         try {
             const response = await fetch(backendURL, {
                 method: "POST",
@@ -133,13 +177,77 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    // 🆘 Help Panel Toggle
+    async function searchWeb(query) {
+        const res = await fetch("https://nova-x-7akw.onrender.com/search-web", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        return data.results;
+    }
+
+    function unwrapDuckDuckGoURL(wrappedUrl) {
+        const match = wrappedUrl.match(/uddg=([^&]+)/);
+        return match ? decodeURIComponent(match[1]) : wrappedUrl;
+    }
+
+    function getLocation() {
+        navigator.geolocation.getCurrentPosition(
+            pos => getWeather(pos.coords.latitude, pos.coords.longitude),
+            () => addMessage("Nova X", "⚠️ Location access denied.", "ai-message")
+        );
+    }
+
+    async function getWeather(lat, lon) {
+        const apiKey = "9f3002b2622c489d9cf133330251803";
+        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lon}`;
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            addMessage("Nova X", `🌤️ ${data.location.name}: ${data.current.condition.text}, ${data.current.temp_c}°C`);
+        } catch {
+            addMessage("Nova X", "⚠️ Error getting weather.");
+        }
+    }
+
+    async function getWeatherByCity(city) {
+        const apiKey = "9f3002b2622c489d9cf133330251803";
+        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`;
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            addMessage("Nova X", `🌤️ ${data.location.name}: ${data.current.condition.text}, ${data.current.temp_c}°C`);
+        } catch {
+            addMessage("Nova X", "⚠️ Error getting weather.");
+        }
+    }
+
+    async function fetchNewsByCountry(country) {
+        try {
+            const res = await fetch(`https://nova-x-7akw.onrender.com/news/country?country=${country}`);
+            const data = await res.json();
+            addMessage("Nova X", data.response);
+        } catch {
+            addMessage("Nova X", "⚠️ Error getting news.");
+        }
+    }
+
+    async function fetchNewsByTopic(topic) {
+        try {
+            const res = await fetch(`https://nova-x-7akw.onrender.com/news/topic?topic=${topic}`);
+            const data = await res.json();
+            addMessage("Nova X", data.response);
+        } catch {
+            addMessage("Nova X", "⚠️ Error getting news.");
+        }
+    }
+
     document.getElementById("help-button").addEventListener("click", () => {
         const panel = document.getElementById("help-panel");
         panel.style.display = panel.style.display === "block" ? "none" : "block";
     });
 
-    // 📋 Assistant Panel Toggle
     document.getElementById("todo-panel-toggle").addEventListener("click", () => {
         document.getElementById("assistant-panel").style.display = "block";
     });
@@ -148,18 +256,15 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("assistant-panel").style.display = "none";
     });
 
-    // 🗂 Tabs
     document.querySelectorAll(".tab-button").forEach(button => {
         button.addEventListener("click", () => {
             showTab(button.dataset.tab);
         });
     });
 
-    // ➕ Task / Reminder
     document.getElementById("add-task").addEventListener("click", addTask);
     document.getElementById("add-reminder").addEventListener("click", addReminder);
 
-    // 📄 PDF Upload
     document.getElementById("pdf-upload").addEventListener("change", async function () {
         const file = this.files[0];
         if (!file || file.type !== "application/pdf") {
