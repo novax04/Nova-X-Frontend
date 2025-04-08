@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOVA X</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <div class="chat-container">
+    <h2 class="glow-title">NOVA X - Personal Assistant</h2>
+
+    <!-- Chat Box -->
+    <div id="chat-box" class="chat-box">
+      <div class="ai-message">
+        <strong>NOVA X:</strong> Hello! I'm Nova X, your AI assistant. How can I help you today?
+      </div>
+    </div>
+
+    <!-- Input + Controls -->
+    <div class="input-container">
+      <!-- Text input -->
+      <input type="text" id="user-input" placeholder="Type a message..." />
+
+      <!-- 📎 Attachment Button for PDF -->
+      <div class="attachment-wrapper">
+        <label for="pdf-upload" class="attachment-button" title="Attach PDF">
+          <i class="fas fa-paperclip"></i>
+        </label>
+        <input type="file" id="pdf-upload" accept="application/pdf" hidden />
+      </div>
+
+      <!-- Microphone -->
+      <div class="mic-wrapper">
+        <button id="mic-button">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <div class="waveform" id="waveform">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <!-- Send Button -->
+      <button id="send-button">Send</button>
+    </div>
+  </div>
+  
+  <!-- Help Button -->
+  <button id="help-button" title="Help">❔</button>
+
+  <!-- Help Panel (Initially Hidden) -->
+  <div id="help-panel">
+    <h2>How to Use Nova X</h2>
+    <ul>
+  	<li><strong>Chat:</strong> Type your question and hit Enter or click Send.</li>
+  	<li><strong>Voice Input:</strong> Click the 🎙️ mic button and speak.</li>
+  	<li><strong>PDF Summarizer:</strong> Click 📎 (Attach) to upload a PDF. Nova X will summarize it.</li>
+  	<li><strong>Search the Web:</strong> Type <code>search your query</code> to get web results via DuckDuckGo.</li>
+  	<li><strong>News by Country:</strong> Say <code>news in India</code> or any other country.</li>
+  	<li><strong>News by Topic:</strong> Try <code>news about AI</code> for specific topics.</li>
+  	<li><strong>Task:</strong> Add tasks using <code>add task Buy groceries</code>. Manage them in the Tasks tab.</li>
+  	<li><strong>Reminder:</strong> Set reminders like <code>remind me to call John at 5pm</code></li>
+  	<li><strong>Weather by City:</strong> Say <code>weather in Tokyo</code> or just <code>weather</code> for your current location.</li>
+</ul>
+
+  </div>
+
+  <!-- Assistant Panel Toggle -->
+  <button id="todo-panel-toggle">Tasks</button>
+
+  <!-- Assistant Panel -->
+  <div id="assistant-panel">
+    <div class="panel-header">
+      <h3>Assistant Panel</h3>
+      <button id="close-assistant">&times;</button>
+    </div>
+
+    <div class="panel-tabs">
+      <button class="tab-button active" data-tab="tasks">Tasks</button>
+      <button class="tab-button" data-tab="reminders">Reminders</button>
+    </div>
+
+    <!-- Tasks Section -->
+    <div id="tasks" class="panel-section" style="display: block;">
+      <input type="text" id="task-input" placeholder="Enter a new task" />
+      <button id="add-task">Add Task</button>
+      <ul id="task-list" class="task-list"></ul>
+    </div>
+
+    <!-- Reminders Section -->
+    <div id="reminders" class="panel-section" style="display: none;">
+      <input type="text" id="reminder-input" placeholder="Enter a reminder (e.g., Call John at 3pm)" />
+      <button id="add-reminder">Add Reminder</button>
+      <ul id="reminder-list" class="task-list"></ul>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+/* --- Animations --- */
+@keyframes slideInMessage {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes wavePulse {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+/* --- General --- */
+body {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* --- Title --- */
+.glow-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 15px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* --- Chat UI --- */
+.chat-container {
+  background: #111111;
+  width: 85%;
+  max-width: 11000px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  text-align: center;
+}
+.chat-box {
+  height: 400px;
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 10px;
+  background: #000000;
+  border: 1px solid #333333;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chat-box::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background: #666666;
+  border-radius: 3px;
+}
+.chat-box::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+.user-message, .ai-message {
+  max-width: 75%;
+  padding: 12px;
+  margin: 5px 0;
+  border-radius: 15px;
+  display: inline-block;
+  word-wrap: break-word;
+  font-size: 14px;
+  position: relative;
+  text-align: left;
+  background: #1a1a1a;
+  color: #ffffff;
+}
+.user-message {
+  align-self: flex-end;
+  border-top-right-radius: 0;
+  border-left: 3px solid #ffffff;
+}
+.ai-message {
+  border-top-left-radius: 0;
+  border-left: 3px solid #ffffff;
+}
+.user-message:hover, .ai-message:hover {
+  background: #2a2a2a;
+}
+.ai-message a {
+  color: #ffffff;
+  text-decoration: none;
+}
+.ai-message a:hover {
+  text-decoration: underline;
+}
+
+/* --- Input Area --- */
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #000000;
+  padding: 10px;
+  border-radius: 10px;
+  border-top: 1px solid #333333;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.input-container input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #555555;
+  background: #000000;
+  color: #ffffff;
+  font-size: 14px;
+  caret-color: #ffffff;
+}
+.input-container input:focus {
+  outline: none;
+  border-color: #ffffff;
+}
+.input-container button {
+  background: #ffffff;
+  color: #000000;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.input-container button:hover {
+  background: #cccccc;
+}
+
+/* --- Mic --- */
+#mic-button {
+  background: #000000;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+#mic-button:hover {
+  background: #ffffff;
+  color: #000000;
+}
+#mic-button i {
+  font-size: 18px;
+}
+#mic-button.active {
+  background: #ff0000;
+  border: 2px solid #ff0000;
+  color: white;
+}
+.mic-wrapper {
+  display: flex;
+  align-items: center;
+}
+.waveform {
+  display: none;
+  align-items: flex-end;
+  gap: 3px;
+  height: 30px;
+  margin-left: 5px;
+}
+.waveform .bar {
+  width: 4px;
+  height: 100%;
+  background: #ffffff;
+  animation: wavePulse 1s infinite ease-in-out;
+  border-radius: 2px;
+}
+.waveform .bar:nth-child(1) { animation-delay: 0s; }
+.waveform .bar:nth-child(2) { animation-delay: 0.2s; }
+.waveform .bar:nth-child(3) { animation-delay: 0.4s; }
+.waveform .bar:nth-child(4) { animation-delay: 0.6s; }
+.waveform .bar:nth-child(5) { animation-delay: 0.8s; }
+
+/* --- Attachments --- */
+.attachment-wrapper {
+  position: relative;
+  margin-right: 8px;
+}
+.attachment-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.attachment-button:hover {
+  transform: scale(1.2);
+}
+
+/* --- Help --- */
+#help-button {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 20px;
+  background: #111;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 1000;
+}
+#help-panel {
+  position: fixed;
+  top: 60px;
+  right: 15px;
+  background: #1e1e1e;
+  color: #fff;
+  padding: 20px;
+  width: 300px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  display: none;
+  z-index: 1000;
+}
+#help-panel h2 {
+  margin-top: 0;
+  font-size: 18px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+#help-panel ul {
+  padding-left: 20px;
+  margin: 0;
+}
+#help-panel li {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+/* --- Assistant Panel & To-Do --- */
+#todo-panel-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 12px;
+  padding: 6px 10px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+  font-weight: bold;
+}
+#assistant-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 16px;
+  z-index: 9999;
+  display: none;
+}
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.tab-buttons {
+  display: flex;
+  margin-bottom: 10px;
+}
+.tab-button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: #f0f0f0;
+  cursor: pointer;
+}
+.tab-button.active {
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+.panel-section input,
+.panel-section button {
+  margin: 6px 0;
+  padding: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+.task-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  background: #f9f9f9;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+.task-list input[type="checkbox"] {
+  margin-right: 8px;
+}
+li button {
+  background: transparent;
+  color: red;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .chat-container {
+    width: 95%;
+    padding: 15px;
+  }
+  .chat-box {
+    height: 300px;
+  }
+  .input-container input {
+    font-size: 12px;
+  }
+}
+/* Assistant Panel Styling to match Help Panel theme */
+#assistant-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border: 1px solid #333;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 1000;
+  padding: 16px;
+  display: none;
+}
+
+#assistant-panel h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.panel-tabs {
+  display: flex;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #444;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 10px;
+  background-color: #2a2a2a;
+  color: #aaa;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.panel-section {
+  display: none;
+}
+
+#task-input, #reminder-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background-color: #2b2b2b;
+  color: #eee;
+}
+
+#add-task, #add-reminder {
+  width: 100%;
+  padding: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#add-task:hover, #add-reminder:hover {
+  background-color: #0056b3;
+}
+
+#task-list, #reminder-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+#task-list li, #reminder-list li {
+  background-color: #2b2b2b;
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 6px;
+  color: #ccc;
+}
+
+#close-assistant {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  color: #ccc;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#close-assistant:hover {
+  color: #fff;
+}
+
