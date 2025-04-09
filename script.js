@@ -1,12 +1,8 @@
-const backendURL = "https://nova-x-7akw.onrender.com/api/ask";
+const backendURL = "https://nova-x-v2-backend.onrender.com/chat";
 
 function showTab(tabName) {
-    document.querySelectorAll(".panel-section").forEach(panel => {
-        panel.style.display = "none";
-    });
-    document.querySelectorAll(".tab-button").forEach(button => {
-        button.classList.remove("active");
-    });
+    document.querySelectorAll(".panel-section").forEach(panel => panel.style.display = "none");
+    document.querySelectorAll(".tab-button").forEach(button => button.classList.remove("active"));
     document.getElementById(tabName).style.display = "block";
     document.querySelector(`.tab-button[data-tab="${tabName}"]`).classList.add("active");
 }
@@ -14,7 +10,6 @@ function showTab(tabName) {
 function addTask() {
     const taskInput = document.getElementById("task-input");
     const taskList = document.getElementById("task-list");
-
     if (taskInput.value.trim()) {
         const li = document.createElement("li");
         const checkbox = document.createElement("input");
@@ -24,12 +19,8 @@ function addTask() {
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "🗑️";
         deleteButton.onclick = () => taskList.removeChild(li);
-
-        li.appendChild(checkbox);
-        li.appendChild(span);
-        li.appendChild(deleteButton);
+        li.append(checkbox, span, deleteButton);
         taskList.appendChild(li);
-
         taskInput.value = "";
     }
 }
@@ -37,7 +28,6 @@ function addTask() {
 function addReminder() {
     const reminderInput = document.getElementById("reminder-input");
     const reminderList = document.getElementById("reminder-list");
-
     if (reminderInput.value.trim()) {
         const li = document.createElement("li");
         li.textContent = reminderInput.value.trim();
@@ -57,13 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.lang = "en-US";
-
     let isRecording = false;
 
     micButton.addEventListener("click", () => {
-        if (isRecording) recognition.stop();
-        else recognition.start();
-
+        if (isRecording) recognition.stop(); else recognition.start();
         isRecording = !isRecording;
         micButton.classList.toggle("active", isRecording);
         waveform.style.display = isRecording ? "flex" : "none";
@@ -116,12 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const results = await searchWeb(query);
             chatBox.removeChild(loader);
             addMessage("Nova X", "🔎 Search results:", "ai-message");
-            const formatted = results.map(r =>
+            chatBox.innerHTML += results.map(r =>
                 typeof r === 'string'
                     ? `<div>${r}</div>`
                     : `<div class="ai-message"><a href="${unwrapDuckDuckGoURL(r.url)}" target="_blank"><strong>${r.title}</strong></a></div>`
             ).join('');
-            chatBox.innerHTML += formatted;
             chatBox.scrollTop = chatBox.scrollHeight;
             return;
         }
@@ -159,11 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message })
             });
-
             const data = await response.json();
             chatBox.removeChild(loader);
             addMessage("Nova X", data.response, "ai-message");
-        } catch (err) {
+        } catch {
             chatBox.removeChild(loader);
             addMessage("Nova X", "⚠️ Error getting response from backend.", "ai-message");
         }
@@ -178,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function searchWeb(query) {
-        const res = await fetch("https://nova-x-7akw.onrender.com/search-web", {
+        const res = await fetch("https://nova-x-v2-backend.onrender.com/search-web", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
@@ -225,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchNewsByCountry(country) {
         try {
-            const res = await fetch(`https://nova-x-7akw.onrender.com/news/country?country=${country}`);
+            const res = await fetch(`https://nova-x-v2-backend.onrender.com/news/country?country=${country}`);
             const data = await res.json();
             addMessage("Nova X", data.response);
         } catch {
@@ -235,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchNewsByTopic(topic) {
         try {
-            const res = await fetch(`https://nova-x-7akw.onrender.com/news/topic?topic=${topic}`);
+            const res = await fetch(`https://nova-x-v2-backend.onrender.com/news/topic?topic=${topic}`);
             const data = await res.json();
             addMessage("Nova X", data.response);
         } catch {
@@ -277,9 +262,9 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("pdf", file);
 
         try {
-            const response = await fetch("https://nova-x-7akw.onrender.com/pdf", {
+            const response = await fetch("https://nova-x-v2-backend.onrender.com/pdf", {
                 method: "POST",
-                body: formData,
+                body: formData
             });
             const result = await response.json();
             if (result.text) {
@@ -287,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const chatRes = await fetch(backendURL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: summaryPrompt }),
+                    body: JSON.stringify({ message: summaryPrompt })
                 });
                 const chatData = await chatRes.json();
                 addMessage("Nova X", chatData.response);
