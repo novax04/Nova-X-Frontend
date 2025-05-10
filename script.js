@@ -1,4 +1,4 @@
-const backendURL = "https://nova-x-v2-backend.onrender.com/chat";
+const backendURL = "https://nova-x-backend.onrender.com/chat";
 
 function showTab(tabName) {
     document.querySelectorAll(".panel-section").forEach(panel => panel.style.display = "none");
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function searchWeb(query) {
-        const res = await fetch("https://nova-x-v2-backend.onrender.com/search-web", {
+        const res = await fetch("https://nova-x-backend.onrender.com/search-web", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchNewsByCountry(country) {
         try {
-            const res = await fetch(`https://nova-x-v2-backend.onrender.com/news/country?country=${country}`);
+            const res = await fetch(`https://nova-x-backend.onrender.com/news/country?country=${country}`);
             const data = await res.json();
             addMessage("Nova X", data.response);
         } catch {
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchNewsByTopic(topic) {
         try {
-            const res = await fetch(`https://nova-x-v2-backend.onrender.com/news/topic?topic=${topic}`);
+            const res = await fetch(`https://nova-x-backend.onrender.com/news/topic?topic=${topic}`);
             const data = await res.json();
             addMessage("Nova X", data.response);
         } catch {
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("pdf", file);
 
         try {
-            const response = await fetch("https://nova-x-v2-backend.onrender.com/pdf", {
+            const response = await fetch("https://nova-x-backend.onrender.com/pdf", {
                 method: "POST",
                 body: formData
             });
