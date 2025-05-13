@@ -248,37 +248,39 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("add-task").addEventListener("click", addTask);
     document.getElementById("add-reminder").addEventListener("click", addReminder);
 
-    document.getElementById("pdf-upload").addEventListener("change", async function () {
+    document.getElementById("image-upload").addEventListener("change", async function () {
         const file = this.files[0];
-        if (!file || file.type !== "application/pdf") {
-            addMessage("Nova X", "⚠️ Please upload a valid PDF file.");
+        if (!file || !file.type.startsWith("image/")) {
+            addMessage("Nova X", "⚠️ Please upload a valid image file.");
             return;
         }
 
-        addMessage("Nova X", "📄 Processing PDF...");
+        addMessage("Nova X", "🖼️ Processing image...");
         const formData = new FormData();
         formData.append("file", file);
 
         try {
-            const response = await fetch(`${BACKEND_URL}/analyze-pdf`, {
+            const response = await fetch(`${BACKEND_URL}/analyze-image`, {
                 method: "POST",
                 body: formData
             });
-            const result = await response.json();
-            if (result.text) {
-                const summaryPrompt = `Summarize this PDF:\n\n${result.text.slice(0, 3000)}`;
-                const chatRes = await fetch(`${BACKEND_URL}/chat`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: summaryPrompt })
-                });
-                const chatData = await chatRes.json();
-                addMessage("Nova X", chatData.response);
-            } else {
-                addMessage("Nova X", "❌ No text found in PDF.");
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
-        } catch {
-            addMessage("Nova X", "❌ Error processing the PDF.");
+
+            const text = await response.text();
+
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                throw new Error("❌ Backend returned invalid JSON");
+            }
+
+            addMessage("Nova X", result.summary || "❌ No text found in the image.");
+        } catch (error) {
+            addMessage("Nova X", `❌ Error processing the image: ${error.message}`);
         }
     });
 });
