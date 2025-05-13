@@ -1,4 +1,4 @@
-const backendURL = "https://nova-x-backend.onrender.com/chat";
+const BACKEND_URL = "https://nova-x-backend.onrender.com";
 
 function showTab(tabName) {
     document.querySelectorAll(".panel-section").forEach(panel => panel.style.display = "none");
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch(backendURL, {
+            const response = await fetch(`${BACKEND_URL}/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message })
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function searchWeb(query) {
-        const res = await fetch("https://nova-x-backend.onrender.com/search-web", {
+        const res = await fetch(`${BACKEND_URL}/search-web`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
@@ -185,24 +185,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function getWeather(lat, lon) {
-        const apiKey = "9f3002b2622c489d9cf133330251803";
-        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lon}`;
+        const url = `${BACKEND_URL}/weather?city=${lat},${lon}`;
         try {
             const res = await fetch(url);
             const data = await res.json();
-            addMessage("Nova X", `🌤️ ${data.location.name}: ${data.current.condition.text}, ${data.current.temp_c}°C`);
+            addMessage("Nova X", `🌤️ ${data.location}: ${data.condition}, ${data.temp_c}°C`);
         } catch {
             addMessage("Nova X", "⚠️ Error getting weather.");
         }
     }
 
     async function getWeatherByCity(city) {
-        const apiKey = "9f3002b2622c489d9cf133330251803";
-        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`;
+        const url = `${BACKEND_URL}/weather?city=${encodeURIComponent(city)}`;
         try {
             const res = await fetch(url);
             const data = await res.json();
-            addMessage("Nova X", `🌤️ ${data.location.name}: ${data.current.condition.text}, ${data.current.temp_c}°C`);
+            addMessage("Nova X", `🌤️ ${data.location}: ${data.condition}, ${data.temp_c}°C`);
         } catch {
             addMessage("Nova X", "⚠️ Error getting weather.");
         }
@@ -210,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchNewsByCountry(country) {
         try {
-            const res = await fetch(`https://nova-x-backend.onrender.com/news/country?country=${country}`);
+            const res = await fetch(`${BACKEND_URL}/news/country?country=${country}`);
             const data = await res.json();
             addMessage("Nova X", data.response);
         } catch {
@@ -220,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchNewsByTopic(topic) {
         try {
-            const res = await fetch(`https://nova-x-backend.onrender.com/news/topic?topic=${topic}`);
+            const res = await fetch(`${BACKEND_URL}/news/topic?topic=${topic}`);
             const data = await res.json();
             addMessage("Nova X", data.response);
         } catch {
@@ -259,17 +257,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         addMessage("Nova X", "📄 Processing PDF...");
         const formData = new FormData();
-        formData.append("pdf", file);
+        formData.append("file", file);
 
         try {
-            const response = await fetch("https://nova-x-backend.onrender.com/pdf", {
+            const response = await fetch(`${BACKEND_URL}/analyze-pdf`, {
                 method: "POST",
                 body: formData
             });
             const result = await response.json();
             if (result.text) {
                 const summaryPrompt = `Summarize this PDF:\n\n${result.text.slice(0, 3000)}`;
-                const chatRes = await fetch(backendURL, {
+                const chatRes = await fetch(`${BACKEND_URL}/chat`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: summaryPrompt })
